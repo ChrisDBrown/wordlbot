@@ -32,3 +32,6 @@ jobs:
 
       - name: Run PHPCS
         run: composer run-script lint
+
+      - name: Run Deptrac
+        run: composer run-script deptrac

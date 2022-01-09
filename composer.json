@@ -25,6 +25,7 @@
         "phpstan/phpstan-strict-rules": "^1.1",
         "phpstan/phpstan-symfony": "^1.0",
         "phpunit/phpunit": "^9.5",
+        "qossmic/deptrac-shim": "^0.18.0",
         "squizlabs/php_codesniffer": "^3.6",
         "symfony/browser-kit": "6.0.*",
         "symfony/css-selector": "6.0.*",
@@ -77,10 +78,12 @@
         "fix": "phpcbf",
         "test": "phpunit",
         "stan": "phpstan analyse",
+        "deptrac": "deptrac analyse",
         "all": [
             "@stan",
             "@lint",
-            "@test"
+            "@test",
+            "@deptrac"
         ]
     },
     "conflict": {
