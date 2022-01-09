@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: /tmp/composer-cache
+          key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+
+      - name: Install Composer dependencies
+        uses: php-actions/composer@v6
+        with:
+          php_version: 8.0
+
+      - name: Run PHPStan
+        run: composer run-script stan
+
+      - name: Run PHPUnit
+        run: composer run-script test
+
+      - name: Run PHPCS
+        run: composer run-script lint
