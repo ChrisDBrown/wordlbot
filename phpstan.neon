@@ -6,3 +6,4 @@ parameters:
     ergebnis:
         classesAllowedToBeExtended:
             - Symfony\Component\HttpKernel\Kernel
+            - Symfony\Component\Console\Command\Command
