@@ -106,4 +106,77 @@ final class ResultTest extends TestCase
             ['n.l.p'],
         ];
     }
+
+    /**
+     * @test
+     * @dataProvider knownLetterPositions
+     */
+    public function shouldReturnKnownLetterPositions(string $guess, string $outcome, string $expected): void
+    {
+        $result = new Result($guess, $outcome);
+
+        self::assertSame($expected, $result->getKnownLetterPositions());
+    }
+
+    /** @return array<int, array<int, string>> */
+    public function knownLetterPositions(): array
+    {
+        return [
+            ['beast', 'nlppl', '..as.'],
+            ['beast', 'nnnnn', '.....'],
+            ['beast', 'lllll', '.....'],
+            ['beast', 'ppppp', 'beast'],
+        ];
+    }
+
+    /**
+     * @param array<int, string> $expected
+     *
+     * @test
+     * @dataProvider knownLetterMatches
+     */
+    public function shouldReturnKnownLetterMatches(string $guess, string $outcome, array $expected): void
+    {
+        $result = new Result($guess, $outcome);
+
+        self::assertSame($expected, $result->getKnownLetterMatches());
+    }
+
+    /** @return array<int, array<int, array<int, string>|string>> */
+    public function knownLetterMatches(): array
+    {
+        return [
+            ['beast', 'nlppl', ['e', 't']],
+            ['beast', 'nnnnn', []],
+            ['beast', 'lllll', ['b', 'e', 'a', 's', 't']],
+            ['beast', 'ppppp', []],
+            ['aaaaa', 'lllll', ['a']],
+            ['baaaa', 'nllll', ['a']],
+        ];
+    }
+
+    /**
+     * @param array<int, string> $expected
+     *
+     * @test
+     * @dataProvider knownLetterMisses
+     */
+    public function shouldReturnKnownLetterMisses(string $guess, string $outcome, array $expected): void
+    {
+        $result = new Result($guess, $outcome);
+
+        self::assertSame($expected, $result->getKnownLetterMisses());
+    }
+
+    /** @return array<int, array<int, array<int, string>|string>> */
+    public function knownLetterMisses(): array
+    {
+        return [
+            ['beast', 'nlppl', ['b']],
+            ['beast', 'nnnnn', ['b', 'e', 'a', 's', 't']],
+            ['beast', 'lllll', []],
+            ['beast', 'ppppp', []],
+            ['baaaa', 'lnnnn', ['a']],
+        ];
+    }
 }
