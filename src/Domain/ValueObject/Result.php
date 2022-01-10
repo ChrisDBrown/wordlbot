@@ -9,7 +9,11 @@ use App\Domain\Exception\BadLengthOutcome;
 use App\Domain\Exception\InvalidCharactersOutcome;
 use App\Domain\Exception\NonAlphaGuess;
 
+use function array_fill;
+use function array_unique;
+use function array_values;
 use function ctype_lower;
+use function implode;
 use function mb_strlen;
 use function str_replace;
 use function strtolower;
@@ -19,6 +23,7 @@ final class Result
     public const CHAR_NO_MATCH       = 'n';
     public const CHAR_LETTER_MATCH   = 'l';
     public const CHAR_POSITION_MATCH = 'p';
+    public const CHAR_UNKNOWN        = '.';
     public const VALID_OUTCOME_CHARS = [
         self::CHAR_NO_MATCH,
         self::CHAR_LETTER_MATCH,
@@ -63,5 +68,52 @@ final class Result
     public function getOutcome(): string
     {
         return $this->outcome;
+    }
+
+    public function getKnownLetterPositions(): string
+    {
+        $output = array_fill(0, 5, self::CHAR_UNKNOWN);
+
+        for ($i = 0; $i < 5; $i++) {
+            if ($this->outcome[$i] !== self::CHAR_POSITION_MATCH) {
+                continue;
+            }
+
+            $output[$i] = $this->guess[$i];
+        }
+
+        return implode($output);
+    }
+
+    /** @return array<int, string> */
+    public function getKnownLetterMatches(): array
+    {
+        $output = [];
+
+        for ($i = 0; $i < 5; $i++) {
+            if ($this->outcome[$i] !== self::CHAR_LETTER_MATCH) {
+                continue;
+            }
+
+            $output[] = $this->guess[$i];
+        }
+
+        return array_values(array_unique($output));
+    }
+
+    /** @return array<int, string> */
+    public function getKnownLetterMisses(): array
+    {
+        $output = [];
+
+        for ($i = 0; $i < 5; $i++) {
+            if ($this->outcome[$i] !== self::CHAR_NO_MATCH) {
+                continue;
+            }
+
+            $output[] = $this->guess[$i];
+        }
+
+        return array_values(array_unique($output));
     }
 }
