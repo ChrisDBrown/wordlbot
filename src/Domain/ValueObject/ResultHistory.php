@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\ValueObject;
 
 use App\Domain\Exception\HistoryLengthExceeded;
+use App\Domain\ValueObject\Interface\ResultHistory as ResultHistoryInterface;
 
 use function array_fill;
 use function array_merge;
@@ -13,7 +14,7 @@ use function array_values;
 use function count;
 use function implode;
 
-final class ResultHistory
+final class ResultHistory implements ResultHistoryInterface
 {
     /** @var array<int, Result> */
     private array $results = [];
