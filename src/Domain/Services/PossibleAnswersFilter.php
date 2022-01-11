@@ -4,26 +4,34 @@ declare(strict_types=1);
 
 namespace App\Domain\Services;
 
-use App\Domain\ValueObject\Interface\ResultHistory;
+use App\Domain\Exception\FilterReturnsEmpty;
+use App\Domain\Services\Interface\PossibleAnswersFilter as PossibleAnswersFilterInterface;
 use App\Domain\ValueObject\Result;
+use App\Domain\ValueObject\ResultHistory;
 
 use function array_filter;
 use function array_values;
+use function count;
 use function str_contains;
 
-final class PossibleAnswersFilter
+final class PossibleAnswersFilter implements PossibleAnswersFilterInterface
 {
     /**
      * @param array<int, string> $possibleAnswers
      *
-     * @return array<int, string>
+     * @return non-empty-array<int, string>
      */
     public function getValidAnswersForHistory(array $possibleAnswers, ResultHistory $resultHistory): array
     {
         $validAnswers = $this->filterAnswersNotMatchingKnownPositions($possibleAnswers, $resultHistory->getKnownLetterPositions());
         $validAnswers = $this->filterAnswersContainingKnownMisses($validAnswers, $resultHistory->getKnownLetterMisses());
+        $validAnswers = $this->filterAnswersNotContainingKnownMatches($validAnswers, $resultHistory->getKnownLetterMatches());
 
-        return $this->filterAnswersNotContainingKnownMatches($validAnswers, $resultHistory->getKnownLetterMatches());
+        if (count($validAnswers) === 0) {
+            throw new FilterReturnsEmpty();
+        }
+
+        return $validAnswers;
     }
 
     /**

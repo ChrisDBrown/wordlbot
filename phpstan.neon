@@ -8,8 +8,10 @@ parameters:
             - InvalidArgumentException
             - OutOfBoundsException
             - RuntimeException
-            - App\Application\Exception\CannotLoadWordList
+            - App\Domain\Exception\CannotLoadWordList
+            - App\Domain\Exception\CannotRankAnswers
             - App\Domain\Exception\InvalidGuess
             - App\Domain\Exception\InvalidOutcome
+            - Symfony\Bundle\FrameworkBundle\Test\KernelTestCase
             - Symfony\Component\HttpKernel\Kernel
             - Symfony\Component\Console\Command\Command

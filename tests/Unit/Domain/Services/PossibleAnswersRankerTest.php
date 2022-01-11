@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Domain\Services;
 
+use App\Domain\Exception\NoPossibleAnswers;
+use App\Domain\Exception\NoPossibleScores;
+use App\Domain\Exception\NoWinnerFound;
 use App\Domain\Services\PossibleAnswersRanker;
 use PHPUnit\Framework\TestCase;
 
@@ -73,5 +76,38 @@ final class PossibleAnswersRankerTest extends TestCase
         $actual = $this->ranker->getHighestRankingPossibleAnswer($possibleAnswers, ['e']);
 
         self::assertSame('beast', $actual);
+    }
+
+    /** @test */
+    public function shouldThrowOnNoPossibleAnswersGiven(): void
+    {
+        $possibleAnswers = [];
+
+        self::expectException(NoPossibleAnswers::class);
+        $this->ranker->getHighestRankingPossibleAnswer($possibleAnswers, ['e']);
+    }
+
+    /** @test */
+    public function shouldThrowOnNoPossibleScoresGiven(): void
+    {
+        $possibleAnswers = [
+            'beast',
+            'ghost',
+        ];
+
+        self::expectException(NoPossibleScores::class);
+        $this->ranker->getHighestRankingPossibleAnswer($possibleAnswers, []);
+    }
+
+    /** @test */
+    public function shouldThrowOnNoWinnerFound(): void
+    {
+        $possibleAnswers = [
+            'beast',
+            'ghost',
+        ];
+
+        self::expectException(NoWinnerFound::class);
+        $this->ranker->getHighestRankingPossibleAnswer($possibleAnswers, ['f']);
     }
 }
