@@ -5,8 +5,10 @@ parameters:
         - tests
     ergebnis:
         classesAllowedToBeExtended:
-            - OutOfBoundsException
             - InvalidArgumentException
+            - OutOfBoundsException
+            - RuntimeException
+            - App\Application\Exception\CannotLoadWordList
             - App\Domain\Exception\InvalidGuess
             - App\Domain\Exception\InvalidOutcome
             - Symfony\Component\HttpKernel\Kernel

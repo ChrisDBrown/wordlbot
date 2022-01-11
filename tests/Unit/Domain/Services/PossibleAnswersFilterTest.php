@@ -9,6 +9,7 @@ use App\Domain\ValueObject\Interface\ResultHistory;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
 
+/** @covers PossibleAnswersFilter */
 final class PossibleAnswersFilterTest extends TestCase
 {
     private PossibleAnswersFilter $filter;
