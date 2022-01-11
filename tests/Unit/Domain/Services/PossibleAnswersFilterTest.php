@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Domain\Services;
 
+use App\Domain\Exception\FilterReturnsEmpty;
 use App\Domain\Services\PossibleAnswersFilter;
-use App\Domain\ValueObject\Interface\ResultHistory;
-use Mockery as m;
+use App\Domain\ValueObject\Result;
+use App\Domain\ValueObject\ResultHistory;
 use PHPUnit\Framework\TestCase;
 
 /** @covers PossibleAnswersFilter */
@@ -24,7 +25,8 @@ final class PossibleAnswersFilterTest extends TestCase
     /** @test */
     public function shouldFilterAnswersNotMatchingKnownPositions(): void
     {
-        $resultHistory = $this->buildResultHistoryMock(knownPositions: '...st');
+        $resultHistory = new ResultHistory();
+        $resultHistory->addResult(new Result('zzzst', 'nnnpp')); // ...st
 
         $possibleAnswers = [
             'kevin',
@@ -52,9 +54,8 @@ final class PossibleAnswersFilterTest extends TestCase
     /** @test */
     public function shouldFilterAnswersContainingKnownMisses(): void
     {
-        $resultHistory = $this->buildResultHistoryMock(
-            misses: ['f', 'o']
-        );
+        $resultHistory = new ResultHistory();
+        $resultHistory->addResult(new Result('foost', 'nnnpp')); // miss f, o
 
         $possibleAnswers = [
             'feast',
@@ -73,9 +74,8 @@ final class PossibleAnswersFilterTest extends TestCase
     /** @test */
     public function shouldFilterAnswersNotContainingKnownMatches(): void
     {
-        $resultHistory = $this->buildResultHistoryMock(
-            matches: ['f', 'o']
-        );
+        $resultHistory = new ResultHistory();
+        $resultHistory->addResult(new Result('forge', 'llnnn')); // match f, o
 
         $possibleAnswers = [
             'feast',
@@ -91,19 +91,20 @@ final class PossibleAnswersFilterTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    /**
-     * @param array<int, string> $misses
-     * @param array<int, string> $matches
-     */
-    private function buildResultHistoryMock(string $knownPositions = '.....', array $misses = [], array $matches = []): ResultHistory
+    /** @test */
+    public function shouldThrowIfNoAnswersRemain(): void
     {
-        $resultHistory = m::mock(ResultHistory::class);
-        $resultHistory->shouldReceive([
-            'getKnownLetterPositions' => $knownPositions,
-            'getKnownLetterMisses' => $misses,
-            'getKnownLetterMatches' => $matches,
-        ]);
+        $resultHistory = new ResultHistory();
+        $resultHistory->addResult(new Result('forge', 'ppppp'));
 
-        return $resultHistory;
+        $possibleAnswers = [
+            'feast',
+            'toast',
+            'beast',
+            'foist',
+        ];
+
+        self::expectException(FilterReturnsEmpty::class);
+        $this->filter->getValidAnswersForHistory($possibleAnswers, $resultHistory);
     }
 }

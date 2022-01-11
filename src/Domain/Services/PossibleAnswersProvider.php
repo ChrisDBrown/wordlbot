@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Services;
+namespace App\Domain\Services;
 
-use App\Application\Exception\InvalidWordList;
-use App\Application\Exception\MissingWordList;
-use App\Application\Exception\UnopenableWordList;
+use App\Domain\Exception\InvalidWordList;
+use App\Domain\Exception\MissingWordList;
+use App\Domain\Exception\UnopenableWordList;
+use App\Domain\Services\Interface\PossibleAnswersProvider as PossibleAnswersProviderInterface;
 
 use function count;
 use function file_exists;
@@ -14,7 +15,7 @@ use function file_get_contents;
 use function is_array;
 use function json_decode;
 
-final class PossibleAnswersProvider
+final class PossibleAnswersProvider implements PossibleAnswersProviderInterface
 {
     public function __construct(private string $filepath)
     {

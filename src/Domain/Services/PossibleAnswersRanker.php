@@ -4,16 +4,22 @@ declare(strict_types=1);
 
 namespace App\Domain\Services;
 
+use App\Domain\Exception\NoPossibleAnswers;
+use App\Domain\Exception\NoPossibleScores;
+use App\Domain\Exception\NoWinnerFound;
+use App\Domain\Services\Interface\PossibleAnswersRanker as PossibleAnswersRankerInterface;
+
 use function array_filter;
 use function array_key_exists;
 use function array_unique;
+use function count;
 use function in_array;
 use function str_split;
 use function strcmp;
 
 use const ARRAY_FILTER_USE_KEY;
 
-final class PossibleAnswersRanker
+final class PossibleAnswersRanker implements PossibleAnswersRankerInterface
 {
     /**
      * Scored based on the frequency of letters in dictionary words
@@ -54,7 +60,15 @@ final class PossibleAnswersRanker
      */
     public function getHighestRankingPossibleAnswer(array $possibleAnswers, array $unguessedLetters): string
     {
+        if (count($possibleAnswers) === 0) {
+            throw new NoPossibleAnswers();
+        }
+
         $unguessedLetterScores = array_filter(self::LETTER_SCORES, static fn (string $letter) => in_array($letter, $unguessedLetters, true), ARRAY_FILTER_USE_KEY);
+
+        if (count($unguessedLetterScores) === 0) {
+            throw new NoPossibleScores();
+        }
 
         $scores = [];
 
@@ -79,6 +93,10 @@ final class PossibleAnswersRanker
 
             $winner       = $word;
             $winningScore = $score;
+        }
+
+        if ($winner === '') {
+            throw new NoWinnerFound();
         }
 
         return $winner;

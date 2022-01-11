@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Tests\Application\Services;
 
-use App\Application\Exception\InvalidWordList;
-use App\Application\Exception\MissingWordList;
-use App\Application\Services\PossibleAnswersProvider;
+use App\Domain\Exception\InvalidWordList;
+use App\Domain\Exception\MissingWordList;
+use App\Domain\Services\PossibleAnswersProvider;
 use PHPUnit\Framework\TestCase;
 
-/** @covers \App\Application\Services\PossibleAnswersProvider */
+/** @covers PossibleAnswersProvider */
 final class PossibleAnswersProviderTest extends TestCase
 {
     /** @test */
