@@ -17,7 +17,7 @@ final class InteractiveSolverConsoleTest extends KernelTestCase
         $kernel      = self::bootKernel();
         $application = new Application($kernel);
 
-        $command             = $application->find('wordlbot:solver');
+        $command             = $application->find('wordlbot:solver:console');
         $this->commandTester = new CommandTester($command);
 
         parent::setUp();
