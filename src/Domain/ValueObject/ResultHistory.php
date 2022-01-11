@@ -7,12 +7,16 @@ namespace App\Domain\ValueObject;
 use App\Domain\Exception\HistoryLengthExceeded;
 use App\Domain\ValueObject\Interface\ResultHistory as ResultHistoryInterface;
 
+use function array_diff;
 use function array_fill;
+use function array_filter;
 use function array_merge;
 use function array_unique;
 use function array_values;
 use function count;
 use function implode;
+use function range;
+use function str_split;
 
 final class ResultHistory implements ResultHistoryInterface
 {
@@ -73,5 +77,18 @@ final class ResultHistory implements ResultHistoryInterface
         }
 
         return array_values(array_unique($output));
+    }
+
+    /** @return array<int, string> */
+    public function getUnguessedLetters(): array
+    {
+        $knownLettersWithPositions = array_values(array_filter(str_split($this->getKnownLetterPositions()), static fn (string $letter) => $letter !== Result::CHAR_UNKNOWN));
+
+        return array_values(array_diff(range('a', 'z'), $this->getKnownLetterMisses(), $this->getKnownLetterMatches(), $knownLettersWithPositions));
+    }
+
+    public function hasKnownLetters(): bool
+    {
+        return count($this->getKnownLetterMatches()) > 0 || $this->getKnownLetterPositions() !== implode(array_fill(0, 5, Result::CHAR_UNKNOWN));
     }
 }
