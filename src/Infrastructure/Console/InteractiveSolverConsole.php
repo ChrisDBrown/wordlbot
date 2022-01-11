@@ -28,7 +28,7 @@ final class InteractiveSolverConsole extends Command
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
      * @var string|null
      */
-    protected static $defaultName = 'wordlbot:solver';
+    protected static $defaultName = 'wordlbot:solver:console';
 
     public function __construct(
         private MessageBusInterface $bus
