@@ -38,6 +38,7 @@ final class ResultHistoryTest extends TestCase
         $resultHistory->addResult(new Result('quart', 'nnnnn'));
         $resultHistory->addResult(new Result('video', 'nnnnn'));
         $resultHistory->addResult(new Result('chair', 'nnnnn'));
+        $resultHistory->addResult(new Result('favor', 'nnnnn'));
 
         self::expectException(HistoryLengthExceeded::class);
         $resultHistory->addResult(new Result('train', 'nnnnn'));

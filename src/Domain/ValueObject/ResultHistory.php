@@ -24,7 +24,7 @@ final class ResultHistory
 
     public function addResult(Result $result): void
     {
-        if (count($this->results) >= 5) {
+        if (count($this->results) > 5) {
             throw new HistoryLengthExceeded('Cannot add result to history, as it\'s already full');
         }
 
