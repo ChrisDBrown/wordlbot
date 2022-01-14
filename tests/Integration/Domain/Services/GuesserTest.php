@@ -42,7 +42,7 @@ final class GuesserTest extends KernelTestCase
     public function shouldReturnDefaultGuessOnSecondAttemptIfNoMatches(): void
     {
         $resultHistory = new ResultHistory();
-        $resultHistory->addResult(new Result('beast', 'nnnnn'));
+        $resultHistory->addResult(new Result('beast', 'aaaaa'));
 
         $actual = $this->guesser->guess($resultHistory);
 
@@ -53,8 +53,8 @@ final class GuesserTest extends KernelTestCase
     public function shouldReturnDefaultGuessOnThirdAttemptIfNoMatches(): void
     {
         $resultHistory = new ResultHistory();
-        $resultHistory->addResult(new Result('beast', 'nnnnn'));
-        $resultHistory->addResult(new Result('round', 'nnnnn'));
+        $resultHistory->addResult(new Result('beast', 'aaaaa'));
+        $resultHistory->addResult(new Result('round', 'aaaaa'));
 
         $actual = $this->guesser->guess($resultHistory);
 
@@ -89,24 +89,24 @@ final class GuesserTest extends KernelTestCase
 
         yield 'One history, no matches' => [
             [
-                new Result('beast', 'nnnnn'),
+                new Result('beast', 'aaaaa'),
             ],
             'round',
         ];
 
         yield 'Two history, no matches' => [
             [
-                new Result('beast', 'nnnnn'),
-                new Result('round', 'nnnnn'),
+                new Result('beast', 'aaaaa'),
+                new Result('round', 'aaaaa'),
             ],
             'lymph',
         ];
 
         yield 'Two history, some matches' => [
             [
-                new Result('beast', 'nnnnn'),
-                new Result('round', 'lnnpl'),
-                new Result('grind', 'npppl'),
+                new Result('beast', 'aaaaa'),
+                new Result('round', 'paacp'),
+                new Result('grind', 'acccp'),
             ],
             'drink',
         ];

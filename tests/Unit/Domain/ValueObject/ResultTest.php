@@ -17,10 +17,10 @@ final class ResultTest extends TestCase
     /** @test */
     public function shouldLowercaseGetterValues(): void
     {
-        $result = new Result('BEAST', 'PNPNP');
+        $result = new Result('BEAST', 'CACAC');
 
         self::assertSame('beast', $result->getGuess());
-        self::assertSame('pnpnp', $result->getOutcome());
+        self::assertSame('cacac', $result->getOutcome());
     }
 
     /**
@@ -30,7 +30,7 @@ final class ResultTest extends TestCase
     public function shouldThrowOnBadLengthGuesses(string $guess): void
     {
         self::expectException(BadLengthGuess::class);
-        new Result($guess, 'nnnnn');
+        new Result($guess, 'aaaaa');
     }
 
     /** @return array<int, array<int, string>> */
@@ -51,7 +51,7 @@ final class ResultTest extends TestCase
     public function shouldThrowOnBadCharacterGuesses(string $guess): void
     {
         self::expectException(NonAlphaGuess::class);
-        new Result($guess, 'nnnnn');
+        new Result($guess, 'aaaaa');
     }
 
     /** @return array<int, array<int, string>> */
@@ -101,9 +101,9 @@ final class ResultTest extends TestCase
     {
         return [
             ['abcde'],
-            ['n l p'],
+            ['a p c'],
             ['ñññññ'],
-            ['n.l.p'],
+            ['a.p.c'],
         ];
     }
 
@@ -122,10 +122,10 @@ final class ResultTest extends TestCase
     public function knownLetterPositions(): array
     {
         return [
-            ['beast', 'nlppl', '..as.'],
-            ['beast', 'nnnnn', '.....'],
-            ['beast', 'lllll', '.....'],
-            ['beast', 'ppppp', 'beast'],
+            ['beast', 'apccp', '..as.'],
+            ['beast', 'aaaaa', '.....'],
+            ['beast', 'ppppp', '.....'],
+            ['beast', 'ccccc', 'beast'],
         ];
     }
 
@@ -146,12 +146,12 @@ final class ResultTest extends TestCase
     public function knownLetterMatches(): array
     {
         return [
-            ['beast', 'nlppl', ['e', 't']],
-            ['beast', 'nnnnn', []],
-            ['beast', 'lllll', ['b', 'e', 'a', 's', 't']],
-            ['beast', 'ppppp', []],
-            ['aaaaa', 'lllll', ['a']],
-            ['baaaa', 'nllll', ['a']],
+            ['beast', 'apccp', ['e', 't']],
+            ['beast', 'aaaaa', []],
+            ['beast', 'ppppp', ['b', 'e', 'a', 's', 't']],
+            ['beast', 'ccccc', []],
+            ['aaaaa', 'ppppp', ['a']],
+            ['baaaa', 'apppp', ['a']],
         ];
     }
 
@@ -172,11 +172,11 @@ final class ResultTest extends TestCase
     public function knownLetterMisses(): array
     {
         return [
-            ['beast', 'nlppl', ['b']],
-            ['beast', 'nnnnn', ['b', 'e', 'a', 's', 't']],
-            ['beast', 'lllll', []],
+            ['beast', 'apccp', ['b']],
+            ['beast', 'aaaaa', ['b', 'e', 'a', 's', 't']],
             ['beast', 'ppppp', []],
-            ['baaaa', 'lnnnn', ['a']],
+            ['beast', 'ccccc', []],
+            ['baaaa', 'paaaa', ['a']],
         ];
     }
 }

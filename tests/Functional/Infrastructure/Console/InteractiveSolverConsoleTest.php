@@ -26,14 +26,18 @@ final class InteractiveSolverConsoleTest extends KernelTestCase
     /** @test */
     public function shouldSolveKnownTest(): void
     {
-        // answer we're trying to get is drink
-        $this->commandTester->setInputs(['nnnnn']); // beast
-        $this->commandTester->setInputs(['lnnlp']); // round
-        $this->commandTester->setInputs(['npppl']); // grind
-        $this->commandTester->setInputs(['ppppp']); // drink
+        // answer we're trying to get is favor
+        $this->commandTester->setInputs([
+            'aapaa', // beast
+            'acapa', // cairn
+            'pcacc', // valor
+            'pcacc', // vapor
+            'ccccc', // favor
+        ]);
 
         $this->commandTester->execute([]);
 
         $this->commandTester->assertCommandIsSuccessful();
+        self::assertStringContainsString('Solved successfully: favor', $this->commandTester->getDisplay());
     }
 }

@@ -51,7 +51,7 @@ final class GuesserTest extends TestCase
     public function shouldReturnDefaultGuessOnSecondAttemptIfNoMatches(): void
     {
         $resultHistory = new ResultHistory();
-        $resultHistory->addResult(new Result('beast', 'nnnnn'));
+        $resultHistory->addResult(new Result('beast', 'aaaaa'));
 
         $actual = $this->guesser->guess($resultHistory);
 
@@ -62,8 +62,8 @@ final class GuesserTest extends TestCase
     public function shouldReturnDefaultGuessOnThirdAttemptIfNoMatches(): void
     {
         $resultHistory = new ResultHistory();
-        $resultHistory->addResult(new Result('beast', 'nnnnn'));
-        $resultHistory->addResult(new Result('round', 'nnnnn'));
+        $resultHistory->addResult(new Result('beast', 'aaaaa'));
+        $resultHistory->addResult(new Result('round', 'aaaaa'));
 
         $actual = $this->guesser->guess($resultHistory);
 
@@ -74,7 +74,7 @@ final class GuesserTest extends TestCase
     public function shouldReturnGuess(): void
     {
         $resultHistory = new ResultHistory();
-        $resultHistory->addResult(new Result('beast', 'nnpln'));
+        $resultHistory->addResult(new Result('beast', 'aacpa'));
 
         $possibleAnswers = [
             'beast',
