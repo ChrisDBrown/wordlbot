@@ -29,8 +29,8 @@ final class InteractiveSolverConsoleTest extends KernelTestCase
         // answer we're trying to get is favor
         $this->commandTester->setInputs([
             'aapaa', // beast
-            'acapa', // cairn
-            'pcacc', // valor
+            'acpca', // carol
+            'pcaca', // rayon
             'pcacc', // vapor
             'ccccc', // favor
         ]);

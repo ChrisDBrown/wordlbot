@@ -28,13 +28,13 @@ final class PossibleAnswersRankerTest extends TestCase
     public function shouldReturnHighestScoreFromList(): void
     {
         $possibleAnswers = [
-            'steer', // 160.18
-            'civil', // 94.69
-            'bride', // 161.78
-            'beast', // 175.41
-            'ghost', // 129.07
-            'quilt', // 121.37
-            'ocean', // 193.75
+            'steer', // 3530
+            'civil', // 2020
+            'bride', // 3477
+            'beast', // 3891
+            'ghost', // 2852
+            'quilt', // 2615
+            'ocean', // 4018
         ];
 
         $actual = $this->ranker->getHighestRankingPossibleAnswer($possibleAnswers, range('a', 'z'));
@@ -46,13 +46,13 @@ final class PossibleAnswersRankerTest extends TestCase
     public function shouldReturnHighestScoreFromListWithOnlySomeLetters(): void
     {
         $possibleAnswers = [
-            'steer', // 56.88
-            'civil', // 38.45
-            'bride', // 105.89
-            'beast', // 110.75
-            'ghost', // 0.0
-            'quilt', // 38.45
-            'ocean', // 100.19
+            'steer', // 1233
+            'civil', // 671
+            'bride', // 2185
+            'beast', // 2493
+            'ghost', // 0
+            'quilt', // 671
+            'ocean', // 2212
         ];
 
         $actual = $this->ranker->getHighestRankingPossibleAnswer($possibleAnswers, ['a', 'e', 'i', 'b']);
@@ -64,13 +64,13 @@ final class PossibleAnswersRankerTest extends TestCase
     public function shouldReturnFirstAlphabeticalInCaseOfSameScores(): void
     {
         $possibleAnswers = [
-            'steer', // 56.88
-            'civil', // 0.0
-            'bride', // 56.88
-            'beast', // 56.88
-            'ghost', // 0.0
-            'quilt', // 0.0
-            'ocean', // 56.88
+            'steer', // 1233
+            'civil', // 0
+            'bride', // 1233
+            'beast', // 1233
+            'ghost', // 0
+            'quilt', // 0
+            'ocean', // 1233
         ];
 
         $actual = $this->ranker->getHighestRankingPossibleAnswer($possibleAnswers, ['e']);
