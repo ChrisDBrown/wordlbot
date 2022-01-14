@@ -50,7 +50,7 @@ final class InteractiveSolverConsole extends Command
 
             $output->writeln(sprintf('Guess is %s', $guess));
 
-            $question = new Question('Please enter the result (n: no match, l: in word, wrong place, p: in word, correct place): ');
+            $question = new Question('Please enter the result (a: absent, p: present, c: correct): ');
             $question->setValidator(static function ($answer) {
                 if (! is_string($answer) || strlen($answer) !== 5) {
                     throw new InvalidArgumentException(
@@ -58,11 +58,11 @@ final class InteractiveSolverConsole extends Command
                     );
                 }
 
-                $filtered = str_replace(['n', 'l', 'p'], '', $answer);
+                $filtered = str_replace([Result::CHAR_ABSENT, Result::CHAR_PRESENT, Result::CHAR_CORRECT], '', $answer);
 
                 if ($filtered !== '') {
                     throw new InvalidArgumentException(
-                        'Outcome must only contain n, l, and p'
+                        'Outcome must only contain a, p, and c'
                     );
                 }
 
@@ -72,9 +72,9 @@ final class InteractiveSolverConsole extends Command
             $outcome = $helper->ask($input, $output, $question);
 
             $resultHistory->addResult(new Result($guess, $outcome));
-        } while ($outcome !== 'ppppp');
+        } while ($outcome !== Result::FULLY_CORRECT);
 
-        $output->writeln('Solved successfully');
+        $output->writeln(sprintf('Solved successfully: %s', $guess));
 
         return Command::SUCCESS;
     }

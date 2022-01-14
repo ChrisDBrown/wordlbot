@@ -26,7 +26,7 @@ final class PossibleAnswersFilterTest extends TestCase
     public function shouldFilterAnswersNotMatchingKnownPositions(): void
     {
         $resultHistory = new ResultHistory();
-        $resultHistory->addResult(new Result('zzzst', 'nnnpp')); // ...st
+        $resultHistory->addResult(new Result('zzzst', 'aaacc')); // ...st
 
         $possibleAnswers = [
             'kevin',
@@ -55,7 +55,7 @@ final class PossibleAnswersFilterTest extends TestCase
     public function shouldFilterAnswersContainingKnownMisses(): void
     {
         $resultHistory = new ResultHistory();
-        $resultHistory->addResult(new Result('foost', 'nnnpp')); // miss f, o
+        $resultHistory->addResult(new Result('foost', 'aaacc')); // miss f, o
 
         $possibleAnswers = [
             'feast',
@@ -75,7 +75,7 @@ final class PossibleAnswersFilterTest extends TestCase
     public function shouldFilterAnswersNotContainingKnownMatches(): void
     {
         $resultHistory = new ResultHistory();
-        $resultHistory->addResult(new Result('forge', 'llnnn')); // match f, o
+        $resultHistory->addResult(new Result('forge', 'ppaaa')); // match f, o
 
         $possibleAnswers = [
             'feast',
@@ -95,7 +95,7 @@ final class PossibleAnswersFilterTest extends TestCase
     public function shouldThrowIfNoAnswersRemain(): void
     {
         $resultHistory = new ResultHistory();
-        $resultHistory->addResult(new Result('forge', 'ppppp'));
+        $resultHistory->addResult(new Result('forge', 'ccccc'));
 
         $possibleAnswers = [
             'feast',

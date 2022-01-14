@@ -17,9 +17,9 @@ final class ResultHistoryTest extends TestCase
     {
         $resultHistory = new ResultHistory();
 
-        $one   = new Result('beast', 'nnnnn');
-        $two   = new Result('onion', 'nnnnn');
-        $three = new Result('quarry', 'nnnnn');
+        $one   = new Result('beast', 'aaaaa');
+        $two   = new Result('onion', 'aaaaa');
+        $three = new Result('quarry', 'aaaaa');
 
         $resultHistory->addResult($three);
         $resultHistory->addResult($one);
@@ -33,15 +33,15 @@ final class ResultHistoryTest extends TestCase
     {
         $resultHistory = new ResultHistory();
 
-        $resultHistory->addResult(new Result('beast', 'nnnnn'));
-        $resultHistory->addResult(new Result('onion', 'nnnnn'));
-        $resultHistory->addResult(new Result('quart', 'nnnnn'));
-        $resultHistory->addResult(new Result('video', 'nnnnn'));
-        $resultHistory->addResult(new Result('chair', 'nnnnn'));
-        $resultHistory->addResult(new Result('favor', 'nnnnn'));
+        $resultHistory->addResult(new Result('beast', 'aaaaa'));
+        $resultHistory->addResult(new Result('onion', 'aaaaa'));
+        $resultHistory->addResult(new Result('quart', 'aaaaa'));
+        $resultHistory->addResult(new Result('video', 'aaaaa'));
+        $resultHistory->addResult(new Result('chair', 'aaaaa'));
+        $resultHistory->addResult(new Result('favor', 'aaaaa'));
 
         self::expectException(HistoryLengthExceeded::class);
-        $resultHistory->addResult(new Result('train', 'nnnnn'));
+        $resultHistory->addResult(new Result('train', 'aaaaa'));
     }
 
     /**
@@ -71,16 +71,16 @@ final class ResultHistoryTest extends TestCase
 
         yield 'History with no matches' => [
             [
-                new Result('beast', 'nnnnn'),
-                new Result('fires', 'nnnnn'),
+                new Result('beast', 'aaaaa'),
+                new Result('fires', 'aaaaa'),
             ],
             '.....',
         ];
 
         yield 'History with matches' => [
             [
-                new Result('beast', 'pppln'),
-                new Result('bears', 'ppppp'),
+                new Result('beast', 'cccpa'),
+                new Result('bears', 'ccccc'),
             ],
             'bears',
         ];
@@ -114,16 +114,16 @@ final class ResultHistoryTest extends TestCase
 
         yield 'History with no matches' => [
             [
-                new Result('beast', 'nnnnn'),
-                new Result('fires', 'nnnnn'),
+                new Result('beast', 'aaaaa'),
+                new Result('fires', 'aaaaa'),
             ],
             [],
         ];
 
         yield 'History with matches' => [
             [
-                new Result('beast', 'nnnln'),
-                new Result('bears', 'nlnnl'),
+                new Result('beast', 'aaapa'),
+                new Result('bears', 'apaap'),
             ],
             ['s', 'e'],
         ];
@@ -157,16 +157,16 @@ final class ResultHistoryTest extends TestCase
 
         yield 'History with no misses' => [
             [
-                new Result('first', 'pllll'),
-                new Result('frits', 'ppppp'),
+                new Result('first', 'cpppp'),
+                new Result('frits', 'ccccc'),
             ],
             [],
         ];
 
         yield 'History with misses' => [
             [
-                new Result('beast', 'nnnln'),
-                new Result('storm', 'pnnnn'),
+                new Result('beast', 'aaapa'),
+                new Result('storm', 'caaaa'),
             ],
             ['b', 'e', 'a', 't', 'o', 'r', 'm'],
         ];
@@ -195,31 +195,31 @@ final class ResultHistoryTest extends TestCase
     {
         yield 'One unguessed letters' => [
             [
-                new Result('abcde', 'nnnnn'),
-                new Result('fghij', 'nnnnn'),
-                new Result('klmno', 'nnnnn'),
-                new Result('pqrst', 'nnnnn'),
-                new Result('uvwxy', 'nnnnn'),
+                new Result('abcde', 'aaaaa'),
+                new Result('fghij', 'aaaaa'),
+                new Result('klmno', 'aaaaa'),
+                new Result('pqrst', 'aaaaa'),
+                new Result('uvwxy', 'aaaaa'),
             ],
             ['z'],
         ];
 
         yield 'Some unguessed letters' => [
             [
-                new Result('abcde', 'nnnnn'),
-                new Result('fghij', 'nnnnn'),
-                new Result('klmno', 'nnnnn'),
-                new Result('uvwxy', 'nnnnn'),
+                new Result('abcde', 'aaaaa'),
+                new Result('fghij', 'aaaaa'),
+                new Result('klmno', 'aaaaa'),
+                new Result('uvwxy', 'aaaaa'),
             ],
             ['p', 'q', 'r', 's', 't', 'z'],
         ];
 
         yield 'Some unguessed letters, mix of outcomes' => [
             [
-                new Result('beast', 'nnpll'),
-                new Result('stars', 'pppnn'),
-                new Result('stand', 'pppln'),
-                new Result('stain', 'ppppp'),
+                new Result('beast', 'aacpp'),
+                new Result('stars', 'cccaa'),
+                new Result('stand', 'cccpa'),
+                new Result('stain', 'ccccc'),
             ],
             ['c', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'o', 'p', 'q', 'u', 'v', 'w', 'x', 'y', 'z'],
         ];
@@ -247,11 +247,11 @@ final class ResultHistoryTest extends TestCase
     {
         yield 'No known letters, many guesses' => [
             [
-                new Result('abcde', 'nnnnn'),
-                new Result('fghij', 'nnnnn'),
-                new Result('klmno', 'nnnnn'),
-                new Result('pqrst', 'nnnnn'),
-                new Result('uvwxy', 'nnnnn'),
+                new Result('abcde', 'aaaaa'),
+                new Result('fghij', 'aaaaa'),
+                new Result('klmno', 'aaaaa'),
+                new Result('pqrst', 'aaaaa'),
+                new Result('uvwxy', 'aaaaa'),
             ],
             false,
         ];
@@ -263,24 +263,24 @@ final class ResultHistoryTest extends TestCase
 
         yield 'Known letters, position' => [
             [
-                new Result('beast', 'pppnn'),
-                new Result('bears', 'pppnn'),
+                new Result('beast', 'cccaa'),
+                new Result('bears', 'cccaa'),
             ],
             true,
         ];
 
         yield 'Known letters, existing' => [
             [
-                new Result('beast', 'nnnnn'),
-                new Result('bears', 'nnnln'),
+                new Result('beast', 'aaaaa'),
+                new Result('bears', 'aaapa'),
             ],
             true,
         ];
 
         yield 'Known letters, mix' => [
             [
-                new Result('beast', 'plnnn'),
-                new Result('bears', 'plnln'),
+                new Result('beast', 'cpaaa'),
+                new Result('bears', 'cpapa'),
             ],
             true,
         ];

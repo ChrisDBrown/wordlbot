@@ -53,9 +53,9 @@ final class WebSolverQueryHandler implements MessageHandlerInterface
     private const STATE_PRESENT            = 'present';
     private const STATE_CORRECT            = 'correct';
     private const STATE_MAP                = [
-        self::STATE_ABSENT => Result::CHAR_NO_MATCH,
-        self::STATE_PRESENT => Result::CHAR_LETTER_MATCH,
-        self::STATE_CORRECT => Result::CHAR_POSITION_MATCH,
+        self::STATE_ABSENT => Result::CHAR_ABSENT,
+        self::STATE_PRESENT => Result::CHAR_PRESENT,
+        self::STATE_CORRECT => Result::CHAR_CORRECT,
     ];
 
     public function __construct(private Guesser $guesser)
@@ -79,7 +79,7 @@ final class WebSolverQueryHandler implements MessageHandlerInterface
             $outcome = $this->makeGuess($client, $guess, count($resultHistory->getResults()));
 
             $resultHistory->addResult(new Result($guess, $outcome));
-        } while ($outcome !== 'ppppp');
+        } while ($outcome !== Result::FULLY_CORRECT);
 
         sleep(3); // success animation, modal open
 

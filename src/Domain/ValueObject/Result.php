@@ -20,15 +20,16 @@ use function strtolower;
 
 final class Result
 {
-    public const CHAR_NO_MATCH       = 'n';
-    public const CHAR_LETTER_MATCH   = 'l';
-    public const CHAR_POSITION_MATCH = 'p';
+    public const CHAR_ABSENT         = 'a';
+    public const CHAR_PRESENT        = 'p';
+    public const CHAR_CORRECT        = 'c';
     public const CHAR_UNKNOWN        = '.';
     public const VALID_OUTCOME_CHARS = [
-        self::CHAR_NO_MATCH,
-        self::CHAR_LETTER_MATCH,
-        self::CHAR_POSITION_MATCH,
+        self::CHAR_ABSENT,
+        self::CHAR_PRESENT,
+        self::CHAR_CORRECT,
     ];
+    public const FULLY_CORRECT       = 'ccccc';
 
     private string $guess;
     private string $outcome;
@@ -75,7 +76,7 @@ final class Result
         $output = array_fill(0, 5, self::CHAR_UNKNOWN);
 
         for ($i = 0; $i < 5; $i++) {
-            if ($this->outcome[$i] !== self::CHAR_POSITION_MATCH) {
+            if ($this->outcome[$i] !== self::CHAR_CORRECT) {
                 continue;
             }
 
@@ -91,7 +92,7 @@ final class Result
         $output = [];
 
         for ($i = 0; $i < 5; $i++) {
-            if ($this->outcome[$i] !== self::CHAR_LETTER_MATCH) {
+            if ($this->outcome[$i] !== self::CHAR_PRESENT) {
                 continue;
             }
 
@@ -107,7 +108,7 @@ final class Result
         $output = [];
 
         for ($i = 0; $i < 5; $i++) {
-            if ($this->outcome[$i] !== self::CHAR_NO_MATCH) {
+            if ($this->outcome[$i] !== self::CHAR_ABSENT) {
                 continue;
             }
 
