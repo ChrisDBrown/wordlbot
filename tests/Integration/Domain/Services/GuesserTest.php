@@ -110,5 +110,15 @@ final class GuesserTest extends KernelTestCase
             ],
             'drink',
         ];
+
+        yield 'Past failure, answer is tangy - failed as natal was emptying the word list due to poor handling of double a where only one existed' => [
+            [
+                new Result('beast', 'aapap'),
+                new Result('ratio', 'acpaa'),
+                new Result('daunt', 'acapp'),
+                new Result('natal', 'pcpaa'),
+            ],
+            'tangy',
+        ];
     }
 }

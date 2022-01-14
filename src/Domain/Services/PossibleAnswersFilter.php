@@ -9,10 +9,13 @@ use App\Domain\Services\Interface\PossibleAnswersFilter as PossibleAnswersFilter
 use App\Domain\ValueObject\Result;
 use App\Domain\ValueObject\ResultHistory;
 
+use function array_diff;
 use function array_filter;
+use function array_merge;
 use function array_values;
 use function count;
 use function str_contains;
+use function str_split;
 
 final class PossibleAnswersFilter implements PossibleAnswersFilterInterface
 {
@@ -23,9 +26,15 @@ final class PossibleAnswersFilter implements PossibleAnswersFilterInterface
      */
     public function getValidAnswersForHistory(array $possibleAnswers, ResultHistory $resultHistory): array
     {
-        $validAnswers = $this->filterAnswersNotMatchingKnownPositions($possibleAnswers, $resultHistory->getKnownLetterPositions());
-        $validAnswers = $this->filterAnswersContainingKnownMisses($validAnswers, $resultHistory->getKnownLetterMisses());
-        $validAnswers = $this->filterAnswersNotContainingKnownMatches($validAnswers, $resultHistory->getKnownLetterMatches());
+        $validAnswers   = $this->filterAnswersNotMatchingKnownPositions($possibleAnswers, $resultHistory->getKnownLetterPositions());
+        $validAnswers   = $this->filterAnswersNotContainingKnownMatches($validAnswers, $resultHistory->getKnownLetterMatches());
+        $knownLetters   = array_merge(
+            $resultHistory->getKnownLetterMatches(),
+            array_values(array_filter(str_split($resultHistory->getKnownLetterPositions()), static fn (string $char) => $char !== Result::CHAR_UNKNOWN))
+        );
+        $definiteMisses = array_diff($resultHistory->getKnownLetterMisses(), $knownLetters);
+        $validAnswers   = $this->filterAnswersNotContainingKnownMatches($validAnswers, $resultHistory->getKnownLetterMatches());
+        $validAnswers   = $this->filterAnswersContainingKnownMisses($validAnswers, $definiteMisses);
 
         if (count($validAnswers) === 0) {
             throw new FilterReturnsEmpty();

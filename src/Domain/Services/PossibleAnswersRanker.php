@@ -80,7 +80,7 @@ final class PossibleAnswersRanker implements PossibleAnswersRankerInterface
         $winningScore = 0.0;
 
         foreach ($scores as $word => $score) {
-            if ($score === $winningScore && strcmp($word, $winner) <= 0) {
+            if ($score === $winningScore && ($winner === '' || strcmp($word, $winner) <= 0)) {
                 $winner       = $word;
                 $winningScore = $score;
 
