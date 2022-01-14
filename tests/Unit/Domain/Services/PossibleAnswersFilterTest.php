@@ -72,6 +72,21 @@ final class PossibleAnswersFilterTest extends TestCase
     }
 
     /** @test */
+    public function shouldNotFilterAnswersWhereLetterBothMatchesAndMisses(): void
+    {
+        $resultHistory = new ResultHistory();
+        $resultHistory->addResult(new Result('natal', 'pcpaa'));
+
+        $possibleAnswers = ['tangy'];
+
+        $expected = ['tangy'];
+
+        $actual = $this->filter->getValidAnswersForHistory($possibleAnswers, $resultHistory);
+
+        self::assertSame($expected, $actual);
+    }
+
+    /** @test */
     public function shouldFilterAnswersNotContainingKnownMatches(): void
     {
         $resultHistory = new ResultHistory();

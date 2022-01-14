@@ -102,10 +102,7 @@ final class PossibleAnswersRankerTest extends TestCase
     /** @test */
     public function shouldThrowOnNoWinnerFound(): void
     {
-        $possibleAnswers = [
-            'beast',
-            'ghost',
-        ];
+        $possibleAnswers = [''];
 
         self::expectException(NoWinnerFound::class);
         $this->ranker->getHighestRankingPossibleAnswer($possibleAnswers, ['f']);
