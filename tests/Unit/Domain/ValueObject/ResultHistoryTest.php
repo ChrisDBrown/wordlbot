@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Domain\ValueObject;
 
+use App\Domain\Exception\AlreadySolved;
 use App\Domain\Exception\HistoryLengthExceeded;
 use App\Domain\ValueObject\Result;
 use App\Domain\ValueObject\ResultHistory;
@@ -284,5 +285,84 @@ final class ResultHistoryTest extends TestCase
             ],
             true,
         ];
+    }
+
+    /**
+     * @param array<int, Result> $results
+     *
+     * @test
+     * @dataProvider isSolved
+     */
+    public function shouldReturnIsSolved(array $results, bool $expected): void
+    {
+        $resultHistory = new ResultHistory();
+
+        foreach ($results as $result) {
+            $resultHistory->addResult($result);
+        }
+
+        self::assertSame($expected, $resultHistory->isSolved());
+    }
+
+    /** @return Generator<string, array{0: array<int, Result>, 1: bool}, void, void> */
+    public function isSolved(): Generator
+    {
+        yield 'Not solved, no guesses' => [
+            [],
+            false,
+        ];
+
+        yield 'Not solved, no known letters' => [
+            [
+                new Result('abcde', 'aaaaa'),
+                new Result('fghij', 'aaaaa'),
+                new Result('klmno', 'aaaaa'),
+                new Result('pqrst', 'aaaaa'),
+                new Result('uvwxy', 'aaaaa'),
+            ],
+            false,
+        ];
+
+        yield 'Not solved, some known letters' => [
+            [
+                new Result('beast', 'cccaa'),
+                new Result('bears', 'cccaa'),
+            ],
+            false,
+        ];
+
+        yield 'Not solved, one known letter' => [
+            [
+                new Result('beast', 'aaaaa'),
+                new Result('bears', 'aaapa'),
+            ],
+            false,
+        ];
+
+        yield 'Solved, multiple guesses' => [
+            [
+                new Result('beast', 'cccpa'),
+                new Result('bears', 'ccccc'),
+            ],
+            true,
+        ];
+
+        yield 'Solved, one magic guess' => [
+            [
+                new Result('beast', 'ccccc'),
+            ],
+            true,
+        ];
+    }
+
+    /** @test */
+    public function shouldThrowOnTryingToAddToASolvedHistory(): void
+    {
+        $resultHistory = new ResultHistory();
+
+        $resultHistory->addResult(new Result('beast', 'ccccc'));
+
+        self::expectException(AlreadySolved::class);
+        $resultHistory->addResult(new Result('bingo', 'aaaaa'));
     }
 }

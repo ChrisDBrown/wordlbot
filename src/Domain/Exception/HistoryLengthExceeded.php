@@ -8,4 +8,8 @@ use OutOfBoundsException;
 
 final class HistoryLengthExceeded extends OutOfBoundsException
 {
+    public function __construct()
+    {
+        parent::__construct('Cannot add result to history, as it\'s already full');
+    }
 }
