@@ -22,36 +22,36 @@ use const ARRAY_FILTER_USE_KEY;
 final class PossibleAnswersRanker implements PossibleAnswersRankerInterface
 {
     /**
-     * Scored based on the frequency of letters in dictionary words
+     * Scored based on the frequency of letters in the possible answers
      * See https://www3.nd.edu/~busiforc/handouts/cryptography/letterfrequencies.html
      */
     private const LETTER_SCORES = [
-        'e' => 56.88,
-        'a' => 43.31,
-        'r' => 38.64,
-        'i' => 38.45,
-        'o' => 36.51,
-        't' => 35.43,
-        'n' => 33.92,
-        's' => 29.23,
-        'l' => 27.98,
-        'c' => 23.13,
-        'u' => 18.51,
-        'd' => 17.25,
-        'p' => 16.14,
-        'm' => 15.36,
-        'h' => 15.31,
-        'g' => 12.59,
-        'b' => 10.56,
-        'f' => 9.24,
-        'y' => 9.06,
-        'w' => 6.57,
-        'k' => 5.61,
-        'v' => 5.13,
-        'x' => 1.48,
-        'z' => 1.39,
-        'j' => 1.00,
-        'q' => 1.00,
+        'e' => 1233,
+        'a' => 979,
+        'r' => 899,
+        'o' => 754,
+        't' => 729,
+        'l' => 719,
+        'i' => 671,
+        's' => 669,
+        'n' => 575,
+        'c' => 477,
+        'u' => 467,
+        'y' => 425,
+        'd' => 393,
+        'h' => 389,
+        'p' => 367,
+        'm' => 316,
+        'g' => 311,
+        'b' => 281,
+        'f' => 230,
+        'k' => 210,
+        'w' => 159,
+        'v' => 153,
+        'z' => 40,
+        'x' => 37,
+        'q' => 29,
+        'j' => 27,
     ];
 
     /**
@@ -77,7 +77,7 @@ final class PossibleAnswersRanker implements PossibleAnswersRankerInterface
         }
 
         $winner       = '';
-        $winningScore = 0.0;
+        $winningScore = 0;
 
         foreach ($scores as $word => $score) {
             if ($score === $winningScore && ($winner === '' || strcmp($word, $winner) <= 0)) {
@@ -102,8 +102,8 @@ final class PossibleAnswersRanker implements PossibleAnswersRankerInterface
         return $winner;
     }
 
-    /** @param array<string, float> $unguessedLetterScores */
-    private function calculateScore(string $possibleAnswer, array $unguessedLetterScores): float
+    /** @param array<string, int> $unguessedLetterScores */
+    private function calculateScore(string $possibleAnswer, array $unguessedLetterScores): int
     {
         $score = 0;
 

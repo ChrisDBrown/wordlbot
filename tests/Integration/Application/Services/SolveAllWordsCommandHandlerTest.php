@@ -37,9 +37,9 @@ final class SolveAllWordsCommandHandlerTest extends KernelTestCase
     {
         $outcome = ($this->handler)(new SolveAllWordsCommand());
 
-        self::assertCount(2174, $outcome->getPasses());
-        self::assertCount(141, $outcome->getAllFailures());
+        self::assertCount(2180, $outcome->getPasses());
+        self::assertCount(135, $outcome->getAllFailures());
         self::assertSame([HistoryLengthExceeded::class], $outcome->getErrorClasses());
-        self::assertCount(141, $outcome->getFailuresOfErrorClass(HistoryLengthExceeded::class));
+        self::assertCount(135, $outcome->getFailuresOfErrorClass(HistoryLengthExceeded::class));
     }
 }
