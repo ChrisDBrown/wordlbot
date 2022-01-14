@@ -25,3 +25,10 @@ services:
     App\Domain\Services\PossibleAnswersProvider:
         arguments:
             $filepath: '%kernel.project_dir%/src/Resources/validWords.json'
+
+    App\Infrastructure\Client\TwitterClient:
+        arguments:
+            $consumerKey: '%env(resolve:TWITTER_API_KEY)%'
+            $consumerSecret: '%env(resolve:TWITTER_API_KEY_SECRET)%'
+            $tokenIdentifier: '%env(resolve:TWITTER_API_ACCESS_TOKEN)%'
+            $tokenSecret: '%env(resolve:TWITTER_API_ACCESS_TOKEN_SECRET)%'
