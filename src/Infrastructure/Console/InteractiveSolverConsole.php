@@ -72,7 +72,7 @@ final class InteractiveSolverConsole extends Command
             $outcome = $helper->ask($input, $output, $question);
 
             $resultHistory->addResult(new Result($guess, $outcome));
-        } while ($outcome !== Result::FULLY_CORRECT);
+        } while ($resultHistory->isSolved() === false);
 
         $output->writeln(sprintf('Solved successfully: %s', $guess));
 

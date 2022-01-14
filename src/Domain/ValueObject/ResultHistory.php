@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\ValueObject;
 
+use App\Domain\Exception\AlreadySolved;
 use App\Domain\Exception\HistoryLengthExceeded;
 
 use function array_diff;
@@ -24,8 +25,12 @@ final class ResultHistory
 
     public function addResult(Result $result): void
     {
+        if ($this->isSolved()) {
+            throw new AlreadySolved();
+        }
+
         if (count($this->results) > 5) {
-            throw new HistoryLengthExceeded('Cannot add result to history, as it\'s already full');
+            throw new HistoryLengthExceeded();
         }
 
         $this->results[] = $result;
@@ -89,5 +94,17 @@ final class ResultHistory
     public function hasKnownLetters(): bool
     {
         return count($this->getKnownLetterMatches()) > 0 || $this->getKnownLetterPositions() !== implode(array_fill(0, 5, Result::CHAR_UNKNOWN));
+    }
+
+    public function isSolved(): bool
+    {
+        $resultCount = count($this->results);
+        if ($resultCount === 0) {
+            return false;
+        }
+
+        $lastResult = $this->results[$resultCount - 1];
+
+        return $lastResult->getOutcome() === Result::FULLY_CORRECT;
     }
 }

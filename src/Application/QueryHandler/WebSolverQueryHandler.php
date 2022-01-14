@@ -79,7 +79,7 @@ final class WebSolverQueryHandler implements MessageHandlerInterface
             $outcome = $this->makeGuess($client, $guess, count($resultHistory->getResults()));
 
             $resultHistory->addResult(new Result($guess, $outcome));
-        } while ($outcome !== Result::FULLY_CORRECT);
+        } while ($resultHistory->isSolved() === false);
 
         sleep(3); // success animation, modal open
 
