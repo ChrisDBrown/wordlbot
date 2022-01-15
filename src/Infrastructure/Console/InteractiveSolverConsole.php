@@ -29,6 +29,11 @@ final class InteractiveSolverConsole extends Command
      * @var string|null
      */
     protected static $defaultName = 'wordlbot:solver:console';
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+     * @var string|null
+     */
+    protected static $defaultDescription = 'Run the guesser interactively, entering the result of each guess';
 
     public function __construct(
         private MessageBusInterface $bus

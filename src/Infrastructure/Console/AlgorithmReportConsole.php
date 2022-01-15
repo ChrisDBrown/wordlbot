@@ -22,6 +22,11 @@ final class AlgorithmReportConsole extends Command
      * @var string|null
      */
     protected static $defaultName = 'wordlbot:report:algorithm';
+    /**
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+     * @var string|null
+     */
+    protected static $defaultDescription = 'Report the results of running the current algorithm over the entire wordlist';
 
     public function __construct(
         private MessageBusInterface $bus
