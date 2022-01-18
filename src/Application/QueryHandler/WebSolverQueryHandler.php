@@ -13,46 +13,27 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Component\Panther\Client;
 
 use function count;
-use function explode;
 use function json_decode;
+use function ltrim;
 use function sleep;
 use function sprintf;
-use function str_replace;
 
 use const PHP_EOL;
 
 final class WebSolverQueryHandler implements MessageHandlerInterface
 {
-    private const WORDLE_URL               = 'https://www.powerlanguage.co.uk/wordle/';
-    private const GUESS_RESULT_PULLER      = "
+    private const WORDLE_URL          = 'https://www.powerlanguage.co.uk/wordle/';
+    private const GUESS_RESULT_PULLER = "
 			let rows = Array.from(document.querySelector('game-app').shadowRoot.querySelectorAll('game-row'));
 			let tiles = Array.from(rows.map(row => row.shadowRoot.querySelectorAll('game-tile')));
 			let pairs = Array.from(tiles[%d]).map(tile => ({ letter: tile._letter, state: tile._state }));
 			
 			return JSON.stringify(pairs);
 		";
-    private const SHARE_CODE_TO_TEXT_BOX   = "
-            document.querySelector('game-app').shadowRoot.querySelector('game-stats').shadowRoot.querySelector('#share-button').click();
-            
-            let input = document.createElement('input');
-			input.setAttribute('type', 'textarea');
-			input.setAttribute('id', 'paste-box');
-			
-			document.querySelector('body').appendChild(input);
-			
-			document.querySelector('#paste-box').focus();
-        ";
-    private const SHARE_CODE_FROM_TEXT_BOX = "
-            let pasteBox = document.querySelector('#paste-box')
-            const shareCode = pasteBox.value;
-            pasteBox.remove();
-            
-            return shareCode;
-        ";
-    private const STATE_ABSENT             = 'absent';
-    private const STATE_PRESENT            = 'present';
-    private const STATE_CORRECT            = 'correct';
-    private const STATE_MAP                = [
+    private const STATE_ABSENT        = 'absent';
+    private const STATE_PRESENT       = 'present';
+    private const STATE_CORRECT       = 'correct';
+    private const STATE_MAP           = [
         self::STATE_ABSENT => Result::CHAR_ABSENT,
         self::STATE_PRESENT => Result::CHAR_PRESENT,
         self::STATE_CORRECT => Result::CHAR_CORRECT,
@@ -83,16 +64,11 @@ final class WebSolverQueryHandler implements MessageHandlerInterface
 
         sleep(3); // success animation, modal open
 
-        $shareCode = $this->extractShareCode($client);
+        $puzzleNumber = $this->extractPuzzleNumber($client);
 
-        [$header, $body] = explode('  ', $shareCode);
+        $client->takeScreenshot(sprintf('var/images/%s.png', $puzzleNumber));
 
-        $client->getMouse()->clickTo('body');
-        sleep(1); // modal close
-
-        $client->takeScreenshot(explode(' ', $header)[1] . '.png');
-
-        return $header . PHP_EOL . PHP_EOL . str_replace(' ', PHP_EOL, $body);
+        return $this->buildResultCode($resultHistory, $puzzleNumber);
     }
 
     private function makeGuess(Client $client, string $guess, int $guessCount): string
@@ -115,15 +91,28 @@ final class WebSolverQueryHandler implements MessageHandlerInterface
         return $outcome;
     }
 
-    private function extractShareCode(Client $client): string
+    private function extractPuzzleNumber(Client $client): string
     {
-        $client->executeScript(self::SHARE_CODE_TO_TEXT_BOX);
+        $client->getMouse()->clickTo('body');
+        sleep(1); // close win modal
 
-        $keyboard = $client->getKeyboard();
-        $keyboard->pressKey(WebDriverKeys::COMMAND);
-        $keyboard->sendKeys('v');
-        $keyboard->releaseKey(WebDriverKeys::COMMAND);
+        $client->executeScript("document.querySelector('game-app').shadowRoot.querySelector('#settings-button').click()");
 
-        return $client->executeScript(self::SHARE_CODE_FROM_TEXT_BOX);
+        sleep(2); // open settings page
+
+        $puzzleNumber = $client->executeScript("return document.querySelector('game-app').shadowRoot.querySelector('game-settings').shadowRoot.querySelector('#puzzle-number').innerHTML");
+
+        $client->executeScript("document.querySelector('game-app').shadowRoot.querySelector('game-page').shadowRoot.querySelector('game-icon[icon=close]').click()");
+
+        sleep(1); // close settings page
+
+        return ltrim($puzzleNumber, '#');
+    }
+
+    private function buildResultCode(ResultHistory $resultHistory, string $puzzleNumber): string
+    {
+        $header = sprintf('Wordle %s %s/6', $puzzleNumber, count($resultHistory->getResults()));
+
+        return $header . PHP_EOL . PHP_EOL . $resultHistory->getResultGrid();
     }
 }

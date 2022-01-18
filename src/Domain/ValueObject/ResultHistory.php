@@ -16,10 +16,19 @@ use function array_values;
 use function count;
 use function implode;
 use function range;
+use function rtrim;
 use function str_split;
+
+use const PHP_EOL;
 
 final class ResultHistory
 {
+    private const GRID_MAP = [
+        Result::CHAR_ABSENT => '⬛',
+        Result::CHAR_PRESENT => '🟨',
+        Result::CHAR_CORRECT => '🟩',
+    ];
+
     /** @var array<int, Result> */
     private array $results = [];
 
@@ -106,5 +115,20 @@ final class ResultHistory
         $lastResult = $this->results[$resultCount - 1];
 
         return $lastResult->getOutcome() === Result::FULLY_CORRECT;
+    }
+
+    public function getResultGrid(): string
+    {
+        $grid = '';
+        foreach ($this->results as $result) {
+            $row = '';
+            foreach (str_split($result->getOutcome()) as $character) {
+                $row .= self::GRID_MAP[$character];
+            }
+
+            $grid .= $row . PHP_EOL;
+        }
+
+        return rtrim($grid, PHP_EOL);
     }
 }
