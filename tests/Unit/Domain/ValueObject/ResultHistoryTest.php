@@ -11,6 +11,8 @@ use App\Domain\ValueObject\ResultHistory;
 use Generator;
 use PHPUnit\Framework\TestCase;
 
+use const PHP_EOL;
+
 /** @covers ResultHistory */
 final class ResultHistoryTest extends TestCase
 {
@@ -364,5 +366,48 @@ final class ResultHistoryTest extends TestCase
 
         self::expectException(AlreadySolved::class);
         $resultHistory->addResult(new Result('bingo', 'aaaaa'));
+    }
+
+    /**
+     * @param array<int, Result> $results
+     *
+     * @test
+     * @dataProvider resultGrid
+     */
+    public function shouldBuildOutputGrid(array $results, string $expected): void
+    {
+        $resultHistory = new ResultHistory();
+
+        foreach ($results as $result) {
+            $resultHistory->addResult($result);
+        }
+
+        self::assertSame($expected, $resultHistory->getResultGrid());
+    }
+
+    /** @return Generator<string, array{0: array<int, Result>, 1: string}, void, void> */
+    public function resultGrid(): Generator
+    {
+        yield 'No results, empty grid' => [
+            [],
+            '',
+        ];
+
+        yield 'One result, one row' => [
+            [
+                new Result('beast', 'capcc'),
+            ],
+            '🟩⬛🟨🟩🟩',
+        ];
+
+        yield 'Four results, four rows' => [
+            [
+                new Result('beast', 'aacpp'),
+                new Result('stars', 'cccaa'),
+                new Result('stand', 'cccpa'),
+                new Result('stain', 'ccccc'),
+            ],
+            '⬛⬛🟩🟨🟨' . PHP_EOL . '🟩🟩🟩⬛⬛' . PHP_EOL . '🟩🟩🟩🟨⬛' . PHP_EOL . '🟩🟩🟩🟩🟩',
+        ];
     }
 }
