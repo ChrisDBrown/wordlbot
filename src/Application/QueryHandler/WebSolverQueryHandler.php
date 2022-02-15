@@ -22,7 +22,7 @@ use const PHP_EOL;
 
 final class WebSolverQueryHandler implements MessageHandlerInterface
 {
-    private const WORDLE_URL          = 'https://www.powerlanguage.co.uk/wordle/';
+    private const WORDLE_URL          = 'https://www.nytimes.com/games/wordle/index.html';
     private const GUESS_RESULT_PULLER = "
 			let rows = Array.from(document.querySelector('game-app').shadowRoot.querySelectorAll('game-row'));
 			let tiles = Array.from(rows.map(row => row.shadowRoot.querySelectorAll('game-tile')));
@@ -50,6 +50,8 @@ final class WebSolverQueryHandler implements MessageHandlerInterface
         $client->request('GET', self::WORDLE_URL);
 
         sleep(1); // startup animation
+        $client->getMouse()->clickTo('#pz-gdpr-btn-reject');
+        sleep(1); // ny times ad modal
         $client->getMouse()->clickTo('body');
         sleep(1); // modal close
 
