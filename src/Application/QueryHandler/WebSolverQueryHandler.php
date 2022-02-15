@@ -45,7 +45,7 @@ final class WebSolverQueryHandler implements MessageHandlerInterface
 
     public function __invoke(WebSolverQuery $query): string
     {
-        $client = Client::createChromeClient('drivers/chromedriver');
+        $client = Client::createChromeClient();
 
         $client->request('GET', self::WORDLE_URL);
 
