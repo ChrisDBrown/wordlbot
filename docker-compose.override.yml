@@ -12,11 +12,3 @@ services:
       # - /srv/app/var
     environment:
       APP_ENV: dev
-
-  caddy:
-    volumes:
-      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
-      - ./public:/srv/app/public:ro
-
-###> symfony/mercure-bundle ###
-###< symfony/mercure-bundle ###
