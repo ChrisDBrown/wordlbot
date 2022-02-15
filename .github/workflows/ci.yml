@@ -1,38 +1,38 @@
 name: CI
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    push:
+    pull_request:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    build:
+        name: Docker build
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: Pull images
+              run: docker-compose pull
+            - name: Start services
+              run: docker-compose up --build -d
+            - name: Wait for services
+              run: |
+                  while status="$(docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" "$(docker-compose ps -q php)")"; do
+                    case $status in
+                      starting) sleep 1;;
+                      healthy) exit 0;;
+                      unhealthy) exit 1;;
+                    esac
+                  done
+                  exit 1
+            - name: Run PHPStan
+              run: docker-compose run php composer stan
 
-    steps:
-      - uses: actions/checkout@v2
+            - name: Run PHPUnit
+              run: docker-compose run php composer test
 
-      - name: Cache Composer dependencies
-        uses: actions/cache@v2
-        with:
-          path: /tmp/composer-cache
-          key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+            - name: Run PHPCS
+              run: docker-compose run php composer lint
 
-      - name: Install Composer dependencies
-        uses: php-actions/composer@v6
-        with:
-          php_version: 8.0
-          php_extensions: zip
-
-      - name: Run PHPStan
-        run: composer run-script stan
-
-      - name: Run PHPUnit
-        run: composer run-script test
-
-      - name: Run PHPCS
-        run: composer run-script lint
-
-      - name: Run Deptrac
-        run: composer run-script deptrac
+            - name: Run Deptrac
+              run: docker-compose run php composer deptrac
