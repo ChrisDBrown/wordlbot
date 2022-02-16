@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Application\Services;
+namespace App\Tests\Unit\Domain\Services;
 
 use App\Domain\Exception\InvalidWordList;
 use App\Domain\Exception\MissingWordList;
