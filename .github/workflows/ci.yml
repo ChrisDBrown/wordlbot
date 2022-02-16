@@ -36,3 +36,6 @@ jobs:
 
             - name: Run Deptrac
               run: docker-compose run php composer deptrac
+
+            - name: Run the solver but do not tweet
+              run: docker-compose run php bin/console wordlbot:solver:web
