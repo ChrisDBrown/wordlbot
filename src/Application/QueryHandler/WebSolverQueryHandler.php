@@ -9,6 +9,7 @@ use App\Domain\Services\Guesser;
 use App\Domain\ValueObject\Result;
 use App\Domain\ValueObject\ResultHistory;
 use Facebook\WebDriver\WebDriverKeys;
+use RuntimeException;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Component\Panther\Client;
 
@@ -50,8 +51,13 @@ final class WebSolverQueryHandler implements MessageHandlerInterface
         $client->request('GET', self::WORDLE_URL);
 
         sleep(1); // startup animation
-//        $client->getMouse()->clickTo('#pz-gdpr-btn-reject');
-        sleep(1); // ny times ad modal
+        try {
+            $client->getMouse()->clickTo('#pz-gdpr-btn-reject');
+            sleep(1); // ny times ad banner
+        } catch (RuntimeException) {
+            // do nothing, sometimes the ad banner doesn't load
+        }
+
         $client->getMouse()->clickTo('body');
         sleep(1); // modal close
 
