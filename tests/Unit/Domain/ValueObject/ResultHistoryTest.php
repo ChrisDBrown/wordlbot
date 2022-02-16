@@ -90,6 +90,57 @@ final class ResultHistoryTest extends TestCase
     }
 
     /**
+     * @param array<int, Result>             $results
+     * @param array<int, array<int, string>> $expected
+     *
+     * @test
+     * @dataProvider knownIncorrectLetterPositions
+     */
+    public function shouldReturnKnownIncorrectLetterPositions(array $results, array $expected): void
+    {
+        $resultHistory = new ResultHistory();
+
+        foreach ($results as $result) {
+            $resultHistory->addResult($result);
+        }
+
+        self::assertSame($expected, $resultHistory->getKnownIncorrectLetterPositions());
+    }
+
+    /** @return Generator<string, array{0: array<int, Result>, 1: array<int, array<int, string>>}, void, void> */
+    public function knownIncorrectLetterPositions(): Generator
+    {
+        yield 'No history' => [
+            [],
+            [[], [], [], [], []],
+        ];
+
+        yield 'History with no matches' => [
+            [
+                new Result('beast', 'aaaaa'),
+                new Result('fires', 'aaaaa'),
+            ],
+            [[], [], [], [], []],
+        ];
+
+        yield 'History with match' => [
+            [
+                new Result('beast', 'cccpa'),
+                new Result('bears', 'ccccc'),
+            ],
+            [[], [], [], ['s'], []],
+        ];
+
+        yield 'History with matches' => [
+            [
+                new Result('beast', 'aaapa'),
+                new Result('store', 'paapp'),
+            ],
+            [['s'], [], [], ['s', 'r'], ['e']],
+        ];
+    }
+
+    /**
      * @param array<int, Result> $results
      * @param array<int, string> $expected
      *

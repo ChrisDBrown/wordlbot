@@ -14,6 +14,7 @@ use function array_filter;
 use function array_merge;
 use function array_values;
 use function count;
+use function in_array;
 use function str_contains;
 use function str_split;
 
@@ -28,12 +29,12 @@ final class PossibleAnswersFilter implements PossibleAnswersFilterInterface
     {
         $validAnswers   = $this->filterAnswersNotMatchingKnownPositions($possibleAnswers, $resultHistory->getKnownLetterPositions());
         $validAnswers   = $this->filterAnswersNotContainingKnownMatches($validAnswers, $resultHistory->getKnownLetterMatches());
+        $validAnswers   = $this->filterAnswersMatchingKnownIncorrectPositions($validAnswers, $resultHistory->getKnownIncorrectLetterPositions());
         $knownLetters   = array_merge(
             $resultHistory->getKnownLetterMatches(),
             array_values(array_filter(str_split($resultHistory->getKnownLetterPositions()), static fn (string $char) => $char !== Result::CHAR_UNKNOWN))
         );
         $definiteMisses = array_diff($resultHistory->getKnownLetterMisses(), $knownLetters);
-        $validAnswers   = $this->filterAnswersNotContainingKnownMatches($validAnswers, $resultHistory->getKnownLetterMatches());
         $validAnswers   = $this->filterAnswersContainingKnownMisses($validAnswers, $definiteMisses);
 
         if (count($validAnswers) === 0) {
@@ -60,6 +61,25 @@ final class PossibleAnswersFilter implements PossibleAnswersFilterInterface
             }
 
             return $answer === $knownPositions;
+        }));
+    }
+
+    /**
+     * @param array<int, string>             $possibleAnswers
+     * @param array<int, array<int, string>> $knownIncorrectPositions
+     *
+     * @return array<int, string>
+     */
+    private function filterAnswersMatchingKnownIncorrectPositions(array $possibleAnswers, array $knownIncorrectPositions): array
+    {
+        return array_values(array_filter($possibleAnswers, static function (string $answer) use ($knownIncorrectPositions) {
+            for ($i = 0; $i < 5; $i++) {
+                if (in_array($answer[$i], $knownIncorrectPositions[$i], true)) {
+                    return false;
+                }
+            }
+
+            return true;
         }));
     }
 

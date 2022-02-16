@@ -87,6 +87,24 @@ final class PossibleAnswersFilterTest extends TestCase
     }
 
     /** @test */
+    public function shouldFilterAnswersWithKnownIncorrectMatches(): void
+    {
+        $resultHistory = new ResultHistory();
+        $resultHistory->addResult(new Result('forge', 'ppaaa')); // match f, o
+
+        $possibleAnswers = [
+            'foist',
+            'offal',
+        ];
+
+        $expected = ['offal'];
+
+        $actual = $this->filter->getValidAnswersForHistory($possibleAnswers, $resultHistory);
+
+        self::assertSame($expected, $actual);
+    }
+
+    /** @test */
     public function shouldFilterAnswersNotContainingKnownMatches(): void
     {
         $resultHistory = new ResultHistory();
@@ -96,10 +114,10 @@ final class PossibleAnswersFilterTest extends TestCase
             'feast',
             'toast',
             'beast',
-            'foist',
+            'offal',
         ];
 
-        $expected = ['foist'];
+        $expected = ['offal'];
 
         $actual = $this->filter->getValidAnswersForHistory($possibleAnswers, $resultHistory);
 

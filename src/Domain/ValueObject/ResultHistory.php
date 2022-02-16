@@ -68,6 +68,28 @@ final class ResultHistory
         return implode($output);
     }
 
+    /** @return array<int, array<int, string>> */
+    public function getKnownIncorrectLetterPositions(): array
+    {
+        $output = array_fill(0, 5, []);
+
+        foreach ($this->results as $result) {
+            for ($i = 0; $i < 5; $i++) {
+                if ($result->getOutcome()[$i] !== Result::CHAR_PRESENT) {
+                    continue;
+                }
+
+                $output[$i][] = $result->getGuess()[$i];
+            }
+        }
+
+        for ($i = 0; $i < count($output); $i++) {
+            $output[$i] = array_values(array_unique($output[$i]));
+        }
+
+        return $output;
+    }
+
     /** @return array<int, string> */
     public function getKnownLetterMatches(): array
     {
