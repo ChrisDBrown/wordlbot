@@ -50,7 +50,7 @@ final class WebSolverQueryHandler implements MessageHandlerInterface
         $client->request('GET', self::WORDLE_URL);
 
         sleep(1); // startup animation
-        $client->getMouse()->clickTo('#pz-gdpr-btn-reject');
+//        $client->getMouse()->clickTo('#pz-gdpr-btn-reject');
         sleep(1); // ny times ad modal
         $client->getMouse()->clickTo('body');
         sleep(1); // modal close
