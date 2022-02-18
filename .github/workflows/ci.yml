@@ -13,10 +13,13 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v2
+
             - name: Pull images
               run: docker-compose pull
+
             - name: Start services
               run: docker-compose up --build -d
+
             - name: Wait for services
               run: |
                   while status="$(docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" "$(docker-compose ps -q php)")"; do
@@ -27,6 +30,7 @@ jobs:
                     esac
                   done
                   exit 1
+
             - name: Run PHPStan
               run: docker-compose run php composer stan
 

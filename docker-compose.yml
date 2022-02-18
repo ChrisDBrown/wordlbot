@@ -15,6 +15,11 @@ services:
       timeout: 3s
       retries: 3
       start_period: 30s
+    environment:
+      - TWITTER_API_KEY=$TWITTER_API_KEY
+      - TWITTER_API_KEY_SECRET=$TWITTER_API_KEY_SECRET
+      - TWITTER_API_ACCESS_TOKEN=$TWITTER_API_ACCESS_TOKEN
+      - TWITTER_API_ACCESS_TOKEN_SECRET=$TWITTER_API_ACCESS_TOKEN_SECRET
 
 volumes:
   php_socket:
