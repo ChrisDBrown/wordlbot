@@ -25,12 +25,12 @@ final class WebSolverQueryHandler implements MessageHandlerInterface
 {
     private const WORDLE_URL          = 'https://www.nytimes.com/games/wordle/index.html';
     private const GUESS_RESULT_PULLER = "
-			let rows = Array.from(document.querySelector('game-app').shadowRoot.querySelectorAll('game-row'));
-			let tiles = Array.from(rows.map(row => row.shadowRoot.querySelectorAll('game-tile')));
-			let pairs = Array.from(tiles[%d]).map(tile => ({ letter: tile._letter, state: tile._state }));
-			
-			return JSON.stringify(pairs);
-		";
+            let row = document.querySelector(`[aria-label='Row %d']`);
+            let tiles = row.querySelectorAll(`[data-testid='tile']`);
+            let pairs = Array.from(tiles).map((tile) => ({ letter: tile.innerHTML, state: tile.dataset.state }));
+
+            return JSON.stringify(pairs);
+        ";
     private const STATE_ABSENT        = 'absent';
     private const STATE_PRESENT       = 'present';
     private const STATE_CORRECT       = 'correct';
@@ -52,14 +52,16 @@ final class WebSolverQueryHandler implements MessageHandlerInterface
 
         sleep(1); // startup animation
         try {
-            $client->getMouse()->clickTo('#pz-gdpr-btn-reject');
+            $client->getMouse()->clickTo('[data-testid="Play"]');
             sleep(1); // ny times ad banner
         } catch (RuntimeException) {
             // do nothing, sometimes the ad banner doesn't load
         }
 
-        $client->getMouse()->clickTo('body');
+        $client->getMouse()->clickTo('[aria-label="Close"]');
         sleep(1); // modal close
+
+        $puzzleNumber = $this->extractPuzzleNumber($client);
 
         $resultHistory = new ResultHistory();
 
@@ -71,8 +73,6 @@ final class WebSolverQueryHandler implements MessageHandlerInterface
         } while ($resultHistory->isSolved() === false);
 
         sleep(3); // success animation, modal open
-
-        $puzzleNumber = $this->extractPuzzleNumber($client);
 
         $client->takeScreenshot(sprintf('var/images/%s.png', $puzzleNumber));
 
@@ -86,7 +86,9 @@ final class WebSolverQueryHandler implements MessageHandlerInterface
 
         sleep(2); // guess outcome animation
 
-        $output = $client->executeScript(sprintf(self::GUESS_RESULT_PULLER, $guessCount));
+        $client->takeScreenshot(sprintf('guess%s.png', $guessCount + 1));
+
+        $output = $client->executeScript(sprintf(self::GUESS_RESULT_PULLER, $guessCount + 1));
 
         $results = json_decode($output, true);
 
@@ -101,16 +103,13 @@ final class WebSolverQueryHandler implements MessageHandlerInterface
 
     private function extractPuzzleNumber(Client $client): string
     {
-        $client->getMouse()->clickTo('body');
-        sleep(1); // close win modal
-
-        $client->executeScript("document.querySelector('game-app').shadowRoot.querySelector('#settings-button').click()");
+        $client->getMouse()->clickTo('#settings-button');
 
         sleep(2); // open settings page
 
-        $puzzleNumber = $client->executeScript("return document.querySelector('game-app').shadowRoot.querySelector('game-settings').shadowRoot.querySelector('#puzzle-number').innerHTML");
+        $puzzleNumber = $client->executeScript("return document.querySelector(`[aria-label='game number']`).innerHTML;");
 
-        $client->executeScript("document.querySelector('game-app').shadowRoot.querySelector('game-page').shadowRoot.querySelector('game-icon[icon=close]').click()");
+        $client->getMouse()->clickTo('[aria-label="Close"]');
 
         sleep(1); // close settings page
 

@@ -7,7 +7,7 @@
 ARG PHP_VERSION=8.1
 
 # "php" stage
-FROM php:${PHP_VERSION}-fpm-alpine AS symfony_php
+FROM php:8.0-fpm-alpine AS symfony_php
 
 # persistent / runtime deps
 RUN apk add --no-cache \
@@ -71,7 +71,7 @@ RUN chmod +x /usr/local/bin/docker-entrypoint
 
 VOLUME /var/run/php
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer
 
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
 ENV COMPOSER_ALLOW_SUPERUSER=1
